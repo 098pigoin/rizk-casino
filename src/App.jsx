@@ -10,6 +10,7 @@ import WalletModal from './WalletModal.jsx';
 import { SFX } from './sfx.js';
 import { API } from './api.js';
 import { ProfilePage, DailyWheel, DailyQuests, RakebackPanel, ReferralPanel, RainEvent, getVip } from './profile.jsx';
+import { CaseOpenings, PvPDuels, JackpotTicker } from './unique.jsx';
 
 const ACH = {
   first_win:   {i:'🏆',t:'First Win',    d:'Won your first bet'},
@@ -69,6 +70,8 @@ function PromoBanner(){
 const GAMES=[
   {id:'crash',    label:'Crash',    icon:'🚀',hot:true,  G:Crash},
   {id:'mines',    label:'Mines',    icon:'💣',hot:true,  G:Mines},
+  {id:'cases',    label:'Cases',    icon:'📦',isNew:true, G:CaseOpenings},
+  {id:'duels',    label:'Duels',    icon:'🥊',isNew:true, G:PvPDuels},
   {id:'limbo',    label:'Limbo',    icon:'🌙',isNew:true,G:Limbo},
   {id:'plinko',   label:'Plinko',   icon:'🎯',           G:Plinko},
   {id:'dice',     label:'Dice',     icon:'🎲',           G:Dice},
@@ -103,6 +106,8 @@ export default function App(){
   // Profile + bonuses
   const [showProfile, setShowProfile] = useState(false);
   const [showBonus, setShowBonus] = useState(false);
+  // Community jackpot
+  const [jackpot, setJackpot] = useState(0.2847);
   // Session stats
   const [wag,setWag]=useState(0),  [pnl,setPnl]=useState(0);
   const [wins,setWins]=useState(0),[total,setTot]=useState(0);
@@ -317,11 +322,17 @@ export default function App(){
             </div>
           </div>
 
-          {AG&&<AG.G bal={bal} onWin={onWin} onLose={onLose}/>}
+          {AG&&<AG.G
+            bal={bal}
+            user={user}
+            onWin={(amt) => { onWin(amt); setJackpot(j => parseFloat((j + Math.abs(amt)*0.01).toFixed(4))); }}
+            onLose={(amt) => { onLose(amt); setJackpot(j => parseFloat((j + Math.abs(amt)*0.01).toFixed(4))); }}
+          />}
         </div>
 
         {showSide&&(
           <div style={{position:'sticky',top:76,display:'flex',flexDirection:'column',gap:14}}>
+            <JackpotTicker jackpot={jackpot} />
             <div style={{background:T.bg2,border:`1px solid ${T.bd}`,borderRadius:12,overflow:'hidden'}}>
               <div style={{display:'flex',borderBottom:`1px solid ${T.bd}`}}>
                 {[['feed','📊 Feed'],['leaderboard','🏆 Leaders'],['rakeback','💸 Rakeback']].map(([k,l])=>(
