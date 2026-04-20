@@ -170,10 +170,30 @@ export default function App(){
 
         {/* Logo */}
         <div style={{display:'flex',alignItems:'center',gap:10,flexShrink:0}}>
-          <div onClick={()=>setView('landing')} style={{width:38,height:38,borderRadius:11,background:`linear-gradient(135deg,${T.teal},${T.tealD})`,display:'flex',alignItems:'center',justifyContent:'center',fontSize:22,fontWeight:900,color:'#080e1a',boxShadow:`0 0 22px ${T.teal}55`,cursor:'pointer'}}>R</div>
-          <div style={{display:'flex',flexDirection:'column',lineHeight:1}}>
-            <span style={{fontSize:19,fontWeight:800,color:T.white,letterSpacing:2.5}}>RIZK</span>
-            <span style={{fontSize:8,color:T.muted,letterSpacing:1.5}}>CRYPTO CASINO</span>
+          <div onClick={()=>setView('landing')} style={{cursor:'pointer',display:'flex',alignItems:'center',gap:0}}>
+            <svg width="148" height="44" viewBox="0 0 148 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+              {/* Diamond icon */}
+              <polygon points="22,4 38,22 22,36 6,22" fill="#040B18"/>
+              <polygon points="22,4 16,14 28,14" fill="#C9A227"/>
+              <polygon points="22,4 6,22 16,14" fill="#7A5C14"/>
+              <polygon points="22,4 28,14 38,22" fill="#9A7820"/>
+              <polygon points="16,14 28,14 34,22 10,22" fill="#5A4210"/>
+              <polygon points="10,22 16,14 22,27 22,36" fill="#3E2E0A"/>
+              <polygon points="34,22 28,14 22,27 22,36" fill="#4A360C"/>
+              <polygon points="6,22 10,22 22,36" fill="#2E2208"/>
+              <polygon points="38,22 34,22 22,36" fill="#362808"/>
+              <line x1="6" y1="22" x2="38" y2="22" stroke="#C9A227" strokeWidth="0.8" opacity="0.7"/>
+              <line x1="22" y1="4" x2="16" y2="14" stroke="#C9A227" strokeWidth="0.6" opacity="0.5"/>
+              <line x1="22" y1="4" x2="28" y2="14" stroke="#C9A227" strokeWidth="0.6" opacity="0.5"/>
+              <polygon points="22,4 38,22 22,36 6,22" fill="none" stroke="#C9A227" strokeWidth="1.2"/>
+              <polygon points="22,4 16,14 18,8" fill="white" opacity="0.2"/>
+              {/* RIZK wordmark */}
+              <text x="48" y="29" fontSize="24" fontWeight="900" fill="#C9A227" fontFamily="'Arial Black','Impact',sans-serif" letterSpacing="2">RIZK</text>
+              {/* Thin underline */}
+              <line x1="48" y1="35" x2="142" y2="35" stroke="#C9A227" strokeWidth="0.6" opacity="0.4"/>
+              {/* CRYPTO CASINO */}
+              <text x="48" y="43" fontSize="7" fill="#C9A227" fontFamily="Arial,sans-serif" letterSpacing="2.5" opacity="0.6">CRYPTO CASINO</text>
+            </svg>
           </div>
           <div style={{background:vip.c+'22',border:`1px solid ${vip.c}44`,borderRadius:6,padding:'2px 8px',fontSize:10,fontWeight:700,color:vip.c}}>{vip.i} {vip.n}</div>
         </div>
