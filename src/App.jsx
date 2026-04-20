@@ -9,6 +9,7 @@ import AuthModal from './AuthModal.jsx';
 import WalletModal from './WalletModal.jsx';
 import { SFX } from './sfx.js';
 import { API } from './api.js';
+import { ProfilePage, DailyWheel, DailyQuests, RakebackPanel, ReferralPanel, RainEvent, getVip } from './profile.jsx';
 
 const ACH = {
   first_win:   {i:'🏆',t:'First Win',    d:'Won your first bet'},
@@ -49,8 +50,7 @@ function DailyBonus({onClaim}){
   );
 }
 
-const VIP=[{n:'Bronze',min:0,c:'#cd7f32',i:'🥉'},{n:'Silver',min:.5,c:'#c0c0c0',i:'🥈'},{n:'Gold',min:2,c:'#ffd740',i:'🥇'},{n:'Diamond',min:5,c:'#00e5ff',i:'💎'},{n:'Platinum',min:10,c:'#bf5af2',i:'👑'}];
-const getVip=w=>VIP.reduce((v,l)=>w>=l.min?l:v,VIP[0]);
+// VIP now imported from profile.jsx
 
 const PROMOS=[
   {text:'🚀 Crash is live — cash out before it crashes!',col:T.teal},
@@ -100,6 +100,9 @@ export default function App(){
   const [soundOn,setSoundOn] = useState(true);
   const [achQ,setAchQ]       = useState([]);
   const [unlocked,setUnl]    = useState(new Set());
+  // Profile + bonuses
+  const [showProfile, setShowProfile] = useState(false);
+  const [showBonus, setShowBonus] = useState(false);
   // Session stats
   const [wag,setWag]=useState(0),  [pnl,setPnl]=useState(0);
   const [wins,setWins]=useState(0),[total,setTot]=useState(0);
@@ -164,6 +167,22 @@ export default function App(){
       {showAuth  &&<AuthModal onAuth={handleAuth} onClose={()=>setShowAuth(false)}/>}
       {showWallet&&user&&<WalletModal token={token} user={user} onUpdate={u=>{setUser(u);}} onClose={()=>setShowWallet(false)}/>}
       {achQ[0]&&ACH[achQ[0]]&&<AchPopup ach={ACH[achQ[0]]} onClose={()=>setAchQ(q=>q.slice(1))}/>}
+      {showProfile&&user&&<ProfilePage user={user} token={token} onUpdate={u=>setUser(u)} onClose={()=>setShowProfile(false)}/>}
+      <RainEvent onReceive={amt=>{ setDemoBal(b=>parseFloat((b+amt).toFixed(4))); setFlash(`🌧️ Rain! +${amt} ETH`); }}/>
+      {showBonus&&user&&(
+        <div style={{position:'fixed',inset:0,background:'rgba(0,0,0,.8)',zIndex:150,display:'flex',alignItems:'center',justifyContent:'center',padding:'20px 16px',overflowY:'auto'}} onClick={e=>e.target===e.currentTarget&&setShowBonus(false)}>
+          <div style={{width:'100%',maxWidth:420,display:'flex',flexDirection:'column',gap:12}}>
+            <div style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+              <div style={{fontSize:16,fontWeight:800,color:T.white,fontFamily:FONT}}>🎁 Bonuses & Rewards</div>
+              <button onClick={()=>setShowBonus(false)} style={{background:'transparent',border:'none',color:T.muted,fontSize:22,cursor:'pointer'}}>✕</button>
+            </div>
+            <DailyWheel onWin={amt=>{ setDemoBal(b=>parseFloat((b+amt).toFixed(4))); setFlash(`🎡 Spin! +${amt} ETH`); }}/>
+            <DailyQuests stats={user} onClaim={amt=>{ setDemoBal(b=>parseFloat((b+amt).toFixed(4))); setFlash(`⚡ Quest! +${amt} ETH`); }}/>
+            <RakebackPanel user={user} onClaim={amt=>{ setDemoBal(b=>parseFloat((b+amt).toFixed(4))); setFlash(`💰 Rakeback! +${amt} ETH`); }}/>
+            <ReferralPanel user={user}/>
+          </div>
+        </div>
+      )}
 
       {/* HEADER */}
       <header style={{background:T.bg2,borderBottom:`1px solid ${T.bd}`,height:60,padding:'0 16px',display:'flex',alignItems:'center',justifyContent:'space-between',position:'sticky',top:0,zIndex:50,boxShadow:'0 2px 30px rgba(0,0,0,.6)',gap:10}}>
@@ -223,6 +242,8 @@ export default function App(){
                 <div style={{width:6,height:6,borderRadius:'50%',background:T.green,boxShadow:`0 0 6px ${T.green}`}}/>
                 <span style={{fontSize:11,color:T.green,fontWeight:700,fontFamily:FONT}}>{user.username}</span>
               </div>
+              <button onClick={()=>setShowProfile(true)} style={{background:T.bg3,border:`1px solid ${T.bd}`,color:T.muted,width:32,height:32,borderRadius:7,cursor:'pointer',fontSize:16,display:'flex',alignItems:'center',justifyContent:'center',transition:'all .15s'}}>👤</button>
+              <button onClick={()=>setShowBonus(true)} style={{background:T.gold+'22',border:`1px solid ${T.gold}44`,color:T.gold,width:32,height:32,borderRadius:7,cursor:'pointer',fontSize:16,display:'flex',alignItems:'center',justifyContent:'center'}}>🎁</button>
               <button onClick={logout} style={{background:'transparent',border:`1px solid ${T.bd}`,color:T.muted,padding:'6px 10px',fontSize:11,cursor:'pointer',borderRadius:7,fontFamily:FONT}}>Log out</button>
             </div>
             :<button onClick={()=>setShowAuth(true)} style={{background:`linear-gradient(135deg,${T.teal},${T.tealD})`,border:'none',color:'#080e1a',padding:'9px 18px',fontSize:12,fontWeight:800,cursor:'pointer',borderRadius:9,boxShadow:`0 0 20px ${T.teal}33`,fontFamily:FONT}}>Log In / Sign Up</button>
